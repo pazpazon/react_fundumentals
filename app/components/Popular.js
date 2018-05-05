@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import api from '../utils/api';
 
 const SelectLanguage = (props) => {
 
@@ -8,17 +9,15 @@ const SelectLanguage = (props) => {
   return (
     <ul className='languages'>
       {languages.map(v => {
-        return (
-          <li
-            className={v === props.selectedLanguage ? 'selected' : ''}
-            onClick={
-              props.onSelect.bind(null, v)
-            }
-            key={v}>
-            {v}
-          </li>
-        )
-      })
+          return (
+            <li
+              className={v === props.selectedLanguage ? 'selected' : ''}
+              onClick={ () => props.onSelect(v) }
+              key={v}>
+              {v}
+            </li>
+          )
+        })
       }
     </ul>
   );
@@ -34,15 +33,29 @@ class Popular extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      selectedLanguage: 'All'
+      selectedLanguage: 'All',
+      repos: null
     };
-    this.updateLanguage = this.updateLanguage.bind(this);
+  }
+
+  componentDidMount(){
+    this.updateLanguage(this.state.selectedLanguage);
   }
 
   updateLanguage(lang) {
     this.setState( () => {
-      return { selectedLanguage: lang};
+      return { 
+        selectedLanguage: lang,
+        repos: null
+      };
     });
+
+    api.fetchPopularRepos(lang)
+      .then((repos) => {
+        this.setState( () => {
+           return {repos: repos}
+        });
+      });
   }
 
   render(){
@@ -50,8 +63,13 @@ class Popular extends React.Component{
       <div>
         <SelectLanguage
           selectedLanguage={this.state.selectedLanguage}
-          onSelect={this.updateLanguage}
+          onSelect={(lang) => this.updateLanguage(lang)}
         />
+        <pre>
+          <code>
+            {JSON.stringify(this.state.repos, null, 2)}
+          </code>
+        </pre>
       </div>
     );
   }
