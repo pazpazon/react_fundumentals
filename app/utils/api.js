@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-module.exports = {
-  fetchPopularRepos(language){
-    let encodedUri = window.encodeURI(`https://api.github.com/repositories?q=stars>1+language=${language}&sort=stars&order=desc&type=Repositories`);
+const fetchPopularRepos = async (language) => {
 
-    return axios.get(encodedUri).then( (res) => {
-      return res.data;
-    });
-  }
+  let encodedUri = window.encodeURI(`https://api.github.com/search/repositories?q=stars:>1+language:${language}&sort=stars&order=desc&type=Repositories`);
+
+  return ( await axios.get(encodedUri) ).data.items;
+
 }
+
+export default { fetchPopularRepos };

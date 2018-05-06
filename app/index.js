@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
+import BabelPolyfill from 'babel-polyfill';
 
 import './index.css';
 import App from './components/App';
