@@ -74,7 +74,7 @@ class Popular extends React.Component{
     this.updateLanguage(this.state.selectedLanguage);
   }
 
-  updateLanguage(lang) {
+  async updateLanguage(lang) {
     this.setState( () => {
       return { 
         selectedLanguage: lang,
@@ -82,12 +82,8 @@ class Popular extends React.Component{
       };
     });
 
-    api.fetchPopularRepos(lang)
-      .then((repos) => {
-        this.setState( () => {
-           return {repos: repos}
-        });
-      });
+    let repos = await api.fetchPopularRepos(lang);
+    this.setState( () => ({repos}));
   }
 
   render(){
@@ -101,7 +97,7 @@ class Popular extends React.Component{
             ? <p>Loading...</p>
             : <RepoGrid repos={this.state.repos} />
         }
-        <pre><code>
+        <pre><code className='debug'>
           {this.state.repos
             ? JSON.stringify(this.state.repos, null, 2)
             : ''}
