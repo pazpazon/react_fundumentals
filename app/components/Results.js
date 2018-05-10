@@ -5,6 +5,7 @@ import qs from "query-string";
 
 import api from "../utils/api";
 import PlayerPreview from "./PlayerPreview";
+import Loading from './Loading';
 
 const Profile = (props) => {
   let info = props.info;
@@ -77,9 +78,7 @@ class Results extends React.Component {
 
     if (loading) {
       return (
-        <div>
-          <p>Loading...</p>
-        </div>
+        <Loading/>
       );
     }
     if (error) {
