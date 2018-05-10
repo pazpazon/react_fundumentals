@@ -95,6 +95,19 @@ a {
   margin-bottom: 7px;
 }
 
+.info-list {
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fix {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .avatar {
   width: 150px;
   border-radius: 50%;
