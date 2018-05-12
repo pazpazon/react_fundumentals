@@ -1,21 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const PlayerPreview = props => {
+const PlayerPreview = ({avatar, username, children}) => {
   return (
     <div>
-      
       <div className="column">
         <img
           className="avatar"
-          src={props.avatar}
-          alt={props.username + "avatar"}
+          src={avatar}
+          alt={username + "avatar"}
         />
-        <h2 className="username">@{props.username}</h2>
+        <h2 className="username">@{username}</h2>
       </div>
       <div className='fix'>
         <div className='info-list'>
-          {props.children}
+          {children}
         </div>
       </div>
     </div>

@@ -3,12 +3,11 @@ import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import qs from "query-string";
 
-import api from "../utils/api";
+import {battle} from "../utils/api";
 import PlayerPreview from "./PlayerPreview";
 import Loading from './Loading';
 
-const Profile = (props) => {
-  let info = props.info;
+const Profile = ({info}) => {
   return (
     <PlayerPreview
       avatar={info.avatar_url}
@@ -31,12 +30,12 @@ Profile.propTypes = {
   info: PropTypes.object.isRequired
 }
 
-const Player = (props) => {
+const Player = ({label, score, profile}) => {
   return (
     <div>
-      <h1 className='header'>{props.label}</h1>
-      <h3 style={{textAlign: 'center'}}>score: {props.score}</h3>
-      <Profile info={props.profile}/>
+      <h1 className='header'>{label}</h1>
+      <h3 style={{textAlign: 'center'}}>score: {score}</h3>
+      <Profile info={profile}/>
     </div>
   )
 }
@@ -53,25 +52,26 @@ class Results extends React.Component {
     loser: null,
     error: null,
     loading: true
-  };
+  }
 
   componentDidMount = async () => {
-    let players = qs.parse(this.props.location.search);
-    let { playerOneName, playerTwoName } = players;
-    let results = await api.battle([playerOneName, playerTwoName]);
-    if (!results) {
+    const { playerOneName, playerTwoName } = qs.parse(this.props.location.search);
+    let winner, loser;
+
+    try {
+      [winner, loser] = await battle([playerOneName, playerTwoName]);
+    } catch(err) {
+      console.warn(err);
+    }
+
+    if (!winner || !loser) {
       return this.setState(() => ({
-        error: `Looks like there's an error, check if both users exist on github...`,
+        error: `Looks like there's an error, check network connetion,and wether both users exist on github...`,
         loading: false
       }));
     }
-    this.setState(() => ({
-      winner: results[0],
-      loser: results[1],
-      loading: false,
-      error: null
-    }));
-  };
+    return this.setState(() => ({ winner, loser, loading: false, error: null }));
+  }
 
   render() {
     let { error, winner, loser, loading } = this.state;

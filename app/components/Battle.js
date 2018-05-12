@@ -5,6 +5,13 @@ import {Link} from 'react-router-dom';
 import PlayerPreview from './PlayerPreview';
 
 class PlayerInput extends React.Component{
+  
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    onSubmit: PropTypes.func.isRequired
+  }
+  
   state = {username: ''};
 
   handleChange = (event) => {
@@ -43,11 +50,6 @@ class PlayerInput extends React.Component{
   }
 }
 
-PlayerInput.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired
-}
 class Battle extends React.Component {
 
   state = {
@@ -59,29 +61,22 @@ class Battle extends React.Component {
   
 
   handleSubmit = (id, username) => {
-    this.setState(() => {
-      let newState = {};
-      newState[id + "Name"] = username;
-      newState[id + "Image"] = `https://github.com/${username}.png?size=200`;
-      return newState;
-    });
+    this.setState(() => ({
+      [id + "Name"]: username,
+      [id + "Image"]: `https://github.com/${username}.png?size=200`
+    }));
   }
 
   handleReset = (id) => {
-    this.setState( () => {
-      return {
+    this.setState( () => ({
         [id + 'Name']: "",
         [id + 'Image']: null,
-      }
-    })
+    }));
   }
 
   render(){
-    let playerOneName = this.state.playerOneName;
-    let playerTwoName = this.state.playerTwoName;
-    let playerOneImage = this.state.playerOneImage;
-    let playerTwoImage = this.state.playerTwoImage;
-    let match = this.props.match;
+    const { playerOneName, playerTwoName, playerOneImage, playerTwoImage } = this.state;
+    const { match } = this.props;
 
     return (
       <div>

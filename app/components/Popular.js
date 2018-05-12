@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import api from "../utils/api";
+import {fetchPopularRepos} from "../utils/api";
 import Loading from './Loading';
 
-const SelectLanguage = props => {
+const SelectLanguage = ({selectedLanguage, onSelect}) => {
   const languages = ["All", "JavaScript", "Ruby", "Java", "Css", "Python"];
 
   return (
@@ -11,8 +11,8 @@ const SelectLanguage = props => {
       {languages.map(v => {
         return (
           <li
-            className={v === props.selectedLanguage ? "selected" : ""}
-            onClick={() => props.onSelect(v)}
+            className={v === selectedLanguage ? "selected" : ""}
+            onClick={() => onSelect(v)}
             key={v}
           >
             {v}
@@ -28,10 +28,10 @@ SelectLanguage.propTypes = {
   onSelect: PropTypes.func.isRequired
 };
 
-const RepoGrid = props => {
+const RepoGrid = ({repos}) => {
   return (
     <ul className="popular-list">
-      {props.repos.map((repo, idx) => {
+      {repos.map((repo, idx) => {
         return (
           <li key={repo.url} className="popular-item">
             <div className="popular-rank">{idx + 1}</div>
@@ -72,32 +72,28 @@ class Popular extends React.Component {
   }
 
   updateLanguage = async (lang) => {
-    this.setState(() => {
-      return {
-        selectedLanguage: lang,
-        repos: null
-      };
-    });
+    this.setState(() => ({ selectedLanguage: lang, repos: null }));
 
-    let repos = await api.fetchPopularRepos(lang);
+    const repos = await fetchPopularRepos(lang);
     this.setState(() => ({ repos }));
   }
 
   render() {
+    const {selectedLanguage, repos} = this.state;
     return (
       <div>
         <SelectLanguage
-          selectedLanguage={this.state.selectedLanguage}
+          selectedLanguage={selectedLanguage}
           onSelect={this.updateLanguage}
         />
-        {!this.state.repos ? (
+        {!repos ? (
           <Loading />
         ) : (
-          <RepoGrid repos={this.state.repos} />
+          <RepoGrid repos={repos} />
         )}
         <pre>
           <code className="debug">
-            {this.state.repos ? JSON.stringify(this.state.repos, null, 2) : ""}
+            {repos ? JSON.stringify(repos, null, 2) : ""}
           </code>
         </pre>
       </div>
